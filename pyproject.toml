@@ -1,0 +1,48 @@
+[tool.poetry]
+name = "ttyt"
+version = "0.1.0"
+readme = "README.md"
+description = "Benchmarking neural network layers on MLX+Metal vs torch+MPS"
+authors = ["Auke Wiggers <wiggers.auke@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+accelerate = "^1.5.2"
+deepgram-sdk = "^3.11.0"
+fire = "^0.7.0"
+Jinja2 = "^3.1.6"
+lmstudio = "^1.2.0"
+matplotlib = "^3.10.1"
+memory-profiler = "^0.61.0"
+mlx = "0.25.1"
+mlx-lm = "0.24.0"
+mlx-whisper = "^0.4.2"
+natsort = "^8.4.0"
+pandas = "^2.2.3"
+plotly = "^6.0.1"
+pyaudio = "^0.2.14"
+python-dotenv = "^1.1.0"
+setuptools = "^78.1.0"
+transformers = "^4.50.1"
+torch = "^2.6.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
+pytest = "^8.3.5"
+pytest-cov = "^6.1.0"
+
+[tool.coverage.run]
+source = ["ttyt"]
+branch = true  
+
+[tool.coverage.report]
+exclude_lines = [
+    "raise NotImplementedError"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+
