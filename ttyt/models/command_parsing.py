@@ -12,6 +12,9 @@ def validate_command(
         maxlength: Maximum number of elements in the command, to avoid complex commands
 
     """
+    if "no_comamnd" in command:
+        raise ValueError("Model did not create a valid command.")
+
     # Basic validation: check for dangerous commands
     danger_zone = [
         "rm",
