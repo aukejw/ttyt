@@ -42,10 +42,12 @@ class LMStudioClient:
 
     def setup_chat(self):
         system_prompt = (
-            "You are a voice command interpreter that converts natural language into shell commands. "
-            "Given a voice command, respond with ONLY the corresponding shell command, nothing else. "
-            "If you cannot determine a valid shell command, respond with an empty string. "
+            "You are a voice command interpreter that converts natural language requests into bash commands. "
+            "If you cannot determine a bash command, respond with 'no command'. "
+            "If you can determine a bash command, make sure the command is precise and covers each part of the request. "
+            "Do not just repeat the input with 'echo' in front of it. "
             "Prioritize safety - never generate destructive commands like deleting files unless explicitly requested."
+            "Respond with ONLY the corresponding shell command, nothing else. "
         )
         self.chat = lms.Chat(system_prompt)
 
@@ -58,10 +60,13 @@ class LMStudioClient:
 
         Returns:
             Shell command string or None if parsing failed
+
         """
         try:
             # Create system and user prompts
-            user_prompt = f"Convert this voice command to a shell command: '{text}'"
+            user_prompt = (
+                f"Try to convert this request into an executable bash command: '{text}'"
+            )
             self.chat.add_user_message(user_prompt)
 
             response = self.model.respond(
@@ -71,13 +76,12 @@ class LMStudioClient:
                     maxTokens=self.max_tokens,
                 ),
             )
-            print(response)
-            print(response.stats)
 
             # Extract the command from the response
             command = response.content.strip()
-            logger.info(f"Request:  '{text}'")
-            logger.info(f"Response: '{command}'")
+            logger.info(f"Request: '{text}'")
+            logger.info(f"Command: '{command}'")
+            self.chat.add_assistant_response(command)
 
             # Simple validation
             if response.stats.stop_reason != "eosFound":
