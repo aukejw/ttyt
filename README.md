@@ -17,10 +17,11 @@ You'll need:
 
 ### Installation
 
-1. Create a venv:
+1. Create a venv, and run setup to enter your Deepgram API key:
  
    ```
    make create-venv
+   make init
    ```
 
 2. Run the tests:

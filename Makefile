@@ -12,6 +12,9 @@ activate-venv:
 	@echo "Run to activate the virtual environment: "
 	@echo "source $(shell poetry env info --path)/bin/activate"
 
+init:
+	poetry run python scripts/initialize.py
+
 ## Targets for running the agent
 
 run: 
