@@ -48,6 +48,7 @@ def setup_signal_handlers():
 
 def main(
     logginglevel: str = "WARNING",
+    model_name="lmstudio-community/gemma-3-4B-it-qat-GGUF",
 ):
     """Main entry point for the application."""
     global listener, agent
@@ -63,9 +64,9 @@ def main(
 
         # Initialize LLM client, agent
         llm_client = LMStudioClient(
-            model_name="lmstudio-community/gemma-3-4B-it-qat-GGUF",
-            system_prompt=os.environ["SYSTEM_PROMPT"],
-            user_prompt_prefix=os.environ["USER_PROMPT_PREFIX"],
+            model_name=model_name,
+            system_prompt=os.environ["SYSTEM_PROMPT"].strip(),
+            user_prompt_prefix=os.environ["USER_PROMPT_PREFIX"].strip(),
         )
         agent = Agent(
             request_queue=request_queue,
