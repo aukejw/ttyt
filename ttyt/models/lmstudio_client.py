@@ -25,6 +25,8 @@ class LMStudioClient:
         model_name: str = "lmstudio-community/gemma-3-4B-it-qat-GGUF",
         temperature: float = 0.1,
         max_tokens: int = 256,
+        system_prompt: str = "You are an assistant that converts natural language requests into shell commands.",
+        user_prompt_prefix: str = "Convert this request into an executable bash command: ",
     ):
         self.host = host
         self.model_name = model_name
@@ -33,23 +35,15 @@ class LMStudioClient:
 
         # Initialize LM Studio client (here using convenience API, to keep client alive)
         self.model = lms.llm(model_name)
-        self.setup_chat()
+
+        self.system_prompt = system_prompt
+        self.user_prompt_prefix = user_prompt_prefix
+        self.chat = lms.Chat(system_prompt)
 
         logger.info(f"LM Studio client initialized with model {model_name} at {host}")
 
     def stop(self):
         self.model.unload()
-
-    def setup_chat(self):
-        system_prompt = (
-            "You are a voice command interpreter that converts natural language requests into bash commands. "
-            "If you cannot determine a bash command, respond with 'no command'. "
-            "If you can determine a bash command, make sure the command is precise and covers each part of the request. "
-            "Do not just repeat the input with 'echo' in front of it. "
-            "Prioritize safety - never generate destructive commands like deleting files unless explicitly requested."
-            "Respond with ONLY the corresponding shell command, nothing else. "
-        )
-        self.chat = lms.Chat(system_prompt)
 
     def parse_command(self, text: str) -> Optional[str]:
         """
@@ -64,9 +58,7 @@ class LMStudioClient:
         """
         try:
             # Create system and user prompts
-            user_prompt = (
-                f"Try to convert this request into an executable bash command: '{text}'"
-            )
+            user_prompt = f"{self.user_prompt_prefix}{text}"
             self.chat.add_user_message(user_prompt)
 
             response = self.model.respond(

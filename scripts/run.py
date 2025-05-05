@@ -1,4 +1,5 @@
 import logging
+import os
 import queue
 import signal
 import sys
@@ -63,6 +64,8 @@ def main(
         # Initialize LLM client, agent
         llm_client = LMStudioClient(
             model_name="lmstudio-community/gemma-3-4B-it-qat-GGUF",
+            system_prompt=os.environ["SYSTEM_PROMPT"],
+            user_prompt_prefix=os.environ["USER_PROMPT_PREFIX"],
         )
         agent = Agent(
             request_queue=request_queue,
