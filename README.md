@@ -6,6 +6,8 @@ Skilled developers build muscle memory and navigate the terminal effortlessly, i
 
 Introducing Talk To Your Terminal - a new, wildly unpredictable way to interact with your computer. Using your voice, you can finally express joy and frustration at your terminal in a natural manner.
 
+https://github.com/user-attachments/assets/1ecb4577-d6d9-4b5b-9f12-1d7a6882c13b
+
 ## Getting started
 
 ### Dependencies
