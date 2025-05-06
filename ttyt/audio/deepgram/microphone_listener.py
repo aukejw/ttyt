@@ -67,16 +67,24 @@ class MicrophoneListener:
 
     def start(self):
         options: LiveOptions = LiveOptions(
-            model="nova-3",
+            model="nova-2",
             punctuate=True,
             language="en-US",
             encoding="linear16",
             channels=1,
             sample_rate=16000,
-            ## To get UtteranceEnd, the following must be true
+            # To force UtteranceEnd, the following must be true
             interim_results=False,
             # utterance_end_ms="1000",
             vad_events=True,
+            keywords=[
+                "pytest",
+                "ls",
+                "mkdir",
+                "cd",
+                "echo",
+                "cat",
+            ],
         )
         self.dg_connection.start(options)
 
@@ -89,6 +97,9 @@ class MicrophoneListener:
 
 
 if __name__ == "__main__":
+    # We can run the listener only, as is..
+    logging.basicConfig(level=logging.DEBUG)
+
     # Create a request queue
     request_queue = asyncio.Queue()
 
