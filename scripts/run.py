@@ -5,6 +5,7 @@ import signal
 import sys
 from typing import Optional
 
+import dotenv
 import fire
 
 from ttyt.agent.agent import Agent
@@ -54,6 +55,7 @@ def main(
     global listener, agent
 
     configure_logger(logginglevel=logginglevel)
+    dotenv.load_dotenv()
 
     try:
         # Set up signal handling

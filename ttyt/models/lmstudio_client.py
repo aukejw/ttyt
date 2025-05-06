@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import Optional
 
 import lmstudio as lms
@@ -34,7 +35,8 @@ class LMStudioClient:
         self.max_tokens = max_tokens
 
         # Initialize LM Studio client (here using convenience API, to keep client alive)
-        self.model = lms.llm(model_name)
+        client = lms.get_default_client()
+        self.model = client.llm.load_new_instance(model_name)
 
         self.system_prompt = system_prompt
         self.user_prompt_prefix = user_prompt_prefix
@@ -43,6 +45,7 @@ class LMStudioClient:
         logger.info(f"LM Studio client initialized with model {model_name} at {host}")
 
     def stop(self):
+        logger.info("Unloading LM Studio model...")
         self.model.unload()
 
     def parse_command(self, text: str) -> Optional[str]:
@@ -58,7 +61,13 @@ class LMStudioClient:
         """
         try:
             # Create system and user prompts
-            user_prompt = f"{self.user_prompt_prefix}{text}"
+            current_dir = os.getcwd()
+            current_files = os.listdir(current_dir)
+
+            prompt = f"cwd = '{current_dir}', contents = [{', '.join(current_files)}]."
+            user_prompt = prompt + f"{self.user_prompt_prefix}{text}"
+
+            logger.info(f"Prompt: {user_prompt}")
             self.chat.add_user_message(user_prompt)
 
             response = self.model.respond(
