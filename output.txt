@@ -1,0 +1,10 @@
+LICENSE
+Makefile
+README.md
+htmlcov
+output.txt
+poetry.lock
+pyproject.toml
+scripts
+tests
+ttyt

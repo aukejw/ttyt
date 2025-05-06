@@ -21,7 +21,7 @@ run:
 	poetry run python scripts/run.py
 
 run-verbose:
-	poetry run python scripts/run.py --logginglevel DEBUG
+	poetry run python scripts/run.py --logginglevel INFO
 
 test:
 	poetry run pytest --cov --cov-report=term-missing --cov-report=html --disable-warnings -v

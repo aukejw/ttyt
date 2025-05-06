@@ -2,7 +2,7 @@
 name = "ttyt"
 version = "0.1.0"
 readme = "README.md"
-description = "Benchmarking neural network layers on MLX+Metal vs torch+MPS"
+description = "Talk to your terminal"
 authors = ["Auke Wiggers <wiggers.auke@gmail.com>"]
 
 [tool.poetry.dependencies]

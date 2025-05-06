@@ -14,6 +14,7 @@ You'll need:
 
  - A [DeepGram](https://console.deepgram.com/signup) API key for speech-to-text. Deepgram provides 200 USD of free credits, which is enough for many hours of work.
  - [PortAudio](https://files.portaudio.com/download.html) for (cross-platform) audio playback, also available as [Homebrew](https://formulae.brew.sh/formula/portaudio).
+ - [LM Studio](https://lmstudio.ai/), plus your favorite local model.
  - [`pyenv`](https://github.com/pyenv/pyenv) to manage the python version.
  - [`poetry`](https://python-poetry.org/) for dependency management.
 
