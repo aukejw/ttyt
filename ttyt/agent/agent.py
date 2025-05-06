@@ -1,9 +1,9 @@
 import asyncio
 import logging
-import subprocess
-from typing import Any, Tuple
+from typing import Any
 
 from ttyt.logging_utils import colorize
+from ttyt.models.tools import execute_command
 
 logger = logging.getLogger(__name__)
 
@@ -25,40 +25,6 @@ class Agent:
         self.llm_client = llm_client
         self.running = False
 
-    def execute_command(self, command: str) -> Tuple[str, str, int]:
-        """
-        Executes a shell command synchronously.
-
-        Args:
-            command: Shell command to execute
-
-        Returns:
-            Tuple of (stdout, stderr, return_code)
-
-        """
-        logger.info(f"Executing command: {colorize(command, 'LIGHT_BLUE')}")
-
-        try:
-            # Run the command synchronously
-            process = subprocess.run(
-                command,
-                shell=True,
-                capture_output=True,
-                text=True,
-                timeout=10.0,
-            )
-
-            # Get results
-            stdout = process.stdout
-            stderr = process.stderr
-            return_code = process.returncode
-
-            return stdout, stderr, return_code
-
-        except Exception as e:
-            logger.error(f"Error executing command: {str(e)}")
-            return "", str(e), 1
-
     def run(self):
         """Main loop, processes commands from the queue and executes them."""
         logger.info("Agent started")
@@ -67,17 +33,25 @@ class Agent:
         print("\nAgent started, try saying something!")
         while self.running:
             try:
+                print("Listening.. ", end="", flush=True)
                 # Blocking get from queue
                 text = self.request_queue.get()
-                print(f"Heard request:    '{colorize(text, 'LIGHT_BLUE')}'")
+                print(f"Heard: '{colorize(text, 'LIGHT_BLUE')}'")
 
                 # Parse the command
                 command = self.llm_client.parse_command(text)
                 print(f"Obtained command: '{colorize(command, 'LIGHT_BLUE')}'")
 
                 # Execute the command, if valid and not emptystring
-                if command:
-                    stdout, stderr, return_code = self.execute_command(command)
+                if command and command != "no command":
+                    logger.info(f"Executing command: {colorize(command, 'LIGHT_BLUE')}")
+                    try:
+                        stdout, stderr, return_code = execute_command(command)
+                    except Exception as e:
+                        logger.error(
+                            f"Error executing command: {colorize(str(e), 'RED')}"
+                        )
+                        stdout, stderr, return_code = "", str(e), 1
 
                     # Log results
                     logger.debug(
@@ -91,7 +65,7 @@ class Agent:
                         print(f"{colorize(stdout, 'RED')}")
 
                 else:
-                    self.llm_client.add_command_output("no command")
+                    print()
 
                 # Mark task as done
                 self.request_queue.task_done()
