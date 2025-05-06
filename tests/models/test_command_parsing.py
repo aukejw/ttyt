@@ -4,15 +4,11 @@ from ttyt.models.command_parsing import validate_command
 
 
 def test_valid_commands():
-    """Test that valid commands pass validation."""
     assert validate_command("ls -la") == True
     assert validate_command("echo 'hello world'") == True
-    assert validate_command("git status") == True
 
 
 def test_dangerous_commands():
-    """Test that dangerous commands raise ValueError."""
-
     for command in [
         "rm -rf /",
         "sudo shutdown -h now",

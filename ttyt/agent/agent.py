@@ -38,9 +38,12 @@ class Agent:
                 text = self.request_queue.get()
                 print(f"Heard: '{colorize(text, 'LIGHT_BLUE')}'")
 
+                if "goodbye" in text.lower():
+                    break
+
                 # Parse the command
                 command = self.llm_client.parse_command(text)
-                print(f"Obtained command: '{colorize(command, 'LIGHT_BLUE')}'")
+                print(f"Obtained command:  '{colorize(command, 'LIGHT_BLUE')}'")
 
                 # Execute the command, if valid and not emptystring
                 if command and command != "no command":

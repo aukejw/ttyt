@@ -24,7 +24,7 @@ class LMStudioClient:
         self,
         host: str = "http://localhost:1234/v1",
         model_name: str = "lmstudio-community/gemma-3-4B-it-qat-GGUF",
-        temperature: float = 0.1,
+        temperature: float = 0.0,
         max_tokens: int = 256,
         system_prompt: str = "You are an assistant that converts natural language requests into shell commands.",
         user_prompt_prefix: str = "Convert this request into an executable bash command: ",
@@ -37,6 +37,7 @@ class LMStudioClient:
         # Initialize LM Studio client (here using convenience API, to keep client alive)
         client = lms.get_default_client()
         self.model = client.llm.load_new_instance(model_name)
+        print(f"Loaded model '{model_name}' via LM Studio..")
 
         self.system_prompt = system_prompt
         self.user_prompt_prefix = user_prompt_prefix
@@ -46,7 +47,12 @@ class LMStudioClient:
 
     def stop(self):
         logger.info("Unloading LM Studio model...")
-        self.model.unload()
+
+        try:
+            self.model.unload()
+        except lms.LMStudioModelNotFoundError:
+            # assume already unloaded somehow, possibly manually
+            pass
 
     def parse_command(self, text: str) -> Optional[str]:
         """
@@ -64,8 +70,12 @@ class LMStudioClient:
             current_dir = os.getcwd()
             current_files = os.listdir(current_dir)
 
-            prompt = f"cwd = '{current_dir}', contents = [{', '.join(current_files)}]."
-            user_prompt = prompt + f"{self.user_prompt_prefix}{text}"
+            user_prompt = (
+                f'PWD="{current_dir}"'
+                + f"\nls $PWD\n"
+                + f"\n".join(current_files)
+                + f"\n{self.user_prompt_prefix} '{text}'"
+            )
 
             logger.info(f"Prompt: {user_prompt}")
             self.chat.add_user_message(user_prompt)
