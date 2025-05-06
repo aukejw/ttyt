@@ -1,5 +1,7 @@
 # 🗣🖥️ Talk To Your Terminal 
 
+[![tests-Mac](https://github.com/aukejw/ttyt/actions/workflows/tests-mac.yaml/badge.svg)](https://github.com/aukejw/ttyt/actions/workflows/tests-mac.yaml)
+
 Skilled developers build muscle memory and navigate the terminal effortlessly, instantly recalling commands and aliases. But what if we could make things.. a lot less precise?
 
 Introducing Talk To Your Terminal - a new, wildly unpredictable way to interact with your computer. Using your voice, you can finally express joy and frustration at your terminal in a natural manner.
